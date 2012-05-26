@@ -95,6 +95,28 @@ describe "Joosy.Resource.Generic", ->
     expect(resource('rumbaMumba') instanceof Joosy.Resource.Generic).toBeTruthy()
     expect(resource('rumbaMumba.foo')).toEqual 'bar'
 
+  it "should map deep", ->
+    class A extends Joosy.Resource.Generic
+    class B extends Joosy.Resource.Generic
+    class C extends Joosy.Resource.Generic
+
+    class A extends A
+      @map 'b', B
+
+    class B extends B
+      @map 'c', C
+
+    resource = A.build {
+      b: {
+        c: {
+          foo: 'bar'
+        }
+      }
+    }
+
+    expect(resource('b.c') instanceof Joosy.Resource.Generic).toBeTruthy()
+    expect(resource('b.c.foo')).toEqual 'bar'
+
   it "should use magic collections", ->
     class window.RumbaMumbasCollection extends Joosy.Resource.Collection
       
